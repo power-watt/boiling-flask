@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <table id='sleepTable'>
+        <thead><tr>
+            <th>ID</th>
+            <th>Bed Time</th>
+            <th>Wake Time</th>
+            <th>Total</th>
+        </tr></thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        const table = document.getElementById('sleepTable');
+        const tbody = table.querySelector('tbody');
+        fetch('/api/sleep-data')
+            .then( r => {
+                if (!r.ok){
+                    throw new Error('Failed to fetch data');
+                }
+                return r.json();
+            })
+            .then(data => {
+                tbody.innerHTML = '';
+                data.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.id}</td>
+                        <td>${record.go_to_bed}</td>
+                        <td>${record.wake_up}</td>
+                        <td>${record.duration}</td>
+                    `;
+                    tbody.appendChild(row);
+                })
+            })
+            .catch(error => {
+                console.err('Fetch error:', error);
+            });
+    </script>
+</body>
+</html>
